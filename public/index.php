@@ -1,2 +1,2 @@
 <?php
-echo "Veebitest";
+require_once  '../app/index.php';
