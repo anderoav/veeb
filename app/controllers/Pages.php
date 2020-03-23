@@ -3,7 +3,15 @@
 
 class Pages extends Controller
 {
-  public function index(){
-    $this->view('pages/index');
+  /**
+   * Page constructor.
+   */
+  public function __construct()
+  {
+  }
+
+  public function index() {
+    $data = array('title' => 'Welcome');
+    $this->view('pages/index', $data);
   }
 }

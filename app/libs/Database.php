@@ -10,7 +10,11 @@ class Database
 
   private $dbh;
   private $stmt;
+  private $error;
 
+  /**
+   * Database constructor.
+   */
   public function __construct()
   {
     $dsn = 'mysql:host='.$this->host.';dbname='.$this->dbname;
@@ -18,20 +22,19 @@ class Database
           PDO::ATTR_PERSISTENT => true,
           PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     );
-    // connect to db
     try {
       $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
-    } catch (PDOException $exception) {
-      $this->error = $exception->getMessage();
-      echo $this->error;
+    } catch (PDOException $e){
+      $this->error = $e->getMessage();
+      echo $this->error.'<br>';
     }
   }
-  // create statement with query
+
   public function query($sql){
     $this->stmt = $this->dbh->prepare($sql);
   }
-  // bind values
-  public function bind($param, $value, $type = null){
+
+  public function bind($param, $value, $type=null){
     if(is_null($type)){
       switch (true){
         case is_int($value):
@@ -49,21 +52,21 @@ class Database
     }
     $this->stmt->bindValue($param, $value, $type);
   }
-  // execute the prepared statement
+
   public function execute(){
     return $this->stmt->execute();
   }
-  // get result set as array of objects
+
   public function getAll(){
     $this->execute();
     return $this->stmt->fetchAll(PDO::FETCH_OBJ);
   }
-  // get result as single record
+
   public function getOne(){
     $this->execute();
     return $this->stmt->fetch(PDO::FETCH_OBJ);
   }
-  // get row count
+
   public function rowCount(){
     return $this->stmt->rowCount();
   }
